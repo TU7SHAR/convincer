@@ -21,27 +21,42 @@ type ResponsePayload = {
   waitingPeriod?: string;
   replyPermission?: string;
   phoneConfirmed?: boolean;
+  phoneNumber?: string;
   website?: string;
 };
 
 type ResponseHubProps = {
   token: string;
   contactLinks: ContactLinks;
+  storageAvailable: boolean;
 };
 
-const contactLabels = {
-  whatsapp: "WhatsApp",
-  instagram: "Instagram",
-  email: "Email",
+type ContactMethod = keyof ContactLinks;
+
+const contactLabels: Record<ContactMethod, string> = {
+  whatsapp: "Open WhatsApp",
+  instagram: "Open Instagram",
+  email: "Open Gmail",
 };
 
-export function ResponseHub({ token, contactLinks }: ResponseHubProps) {
+export function ResponseHub({
+  token,
+  contactLinks,
+  storageAvailable,
+}: ResponseHubProps) {
   const [selected, setSelected] = useState<ResponseType | null>(null);
   const [submitted, setSubmitted] = useState<ResponseType | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
 
   async function submitResponse(payload: ResponsePayload) {
+    if (!storageAvailable) {
+      setError(
+        "The private reply box is temporarily offline. Your words are still here—use one of the direct contact buttons instead.",
+      );
+      return;
+    }
+
     setSubmitting(true);
     setError("");
 
@@ -51,14 +66,23 @@ export function ResponseHub({ token, contactLinks }: ResponseHubProps) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ token, ...payload }),
       });
+      const result = (await response.json().catch(() => null)) as
+        | { message?: string }
+        | null;
 
       if (!response.ok) {
-        throw new Error("Response was not accepted.");
+        throw new Error(
+          result?.message ?? personalPageContent.forms.retryError,
+        );
       }
 
       setSubmitted(payload.responseType);
-    } catch {
-      setError(personalPageContent.forms.retryError);
+    } catch (reason) {
+      setError(
+        reason instanceof Error
+          ? reason.message
+          : personalPageContent.forms.retryError,
+      );
     } finally {
       setSubmitting(false);
     }
@@ -69,86 +93,126 @@ export function ResponseHub({ token, contactLinks }: ResponseHubProps) {
     setError("");
   }
 
-  if (submitted) {
-    const message = personalPageContent.finalMessages[submitted];
-
-    return (
-      <div className="response-success" aria-live="polite">
-        <span className="eyebrow">Response sent</span>
-        <h3>{message.heading}</h3>
-        <p>{message.body}</p>
-        {submitted === "talk" && Object.keys(contactLinks).length > 0 ? (
-          <div className="contact-links" aria-label="Contact choices">
-            {Object.entries(contactLinks).map(([method, href]) =>
-              href ? (
-                <a
-                  href={href}
-                  key={method}
-                  target={method === "email" ? undefined : "_blank"}
-                  rel={method === "email" ? undefined : "noreferrer"}
-                >
-                  {contactLabels[method as keyof typeof contactLabels]}
-                </a>
-              ) : null,
-            )}
-          </div>
-        ) : null}
-      </div>
-    );
-  }
-
   return (
     <div className="response-shell">
-      {!selected ? (
-        <div className="response-options">
-          {personalPageContent.responseHub.options.map((option) => (
-            <button
-              className="response-option"
-              type="button"
-              key={option.type}
-              onClick={() => chooseResponse(option.type)}
-            >
-              <span>{option.label}</span>
-              <small>{option.description}</small>
-            </button>
-          ))}
-        </div>
-      ) : null}
+      <DirectContactCard contactLinks={contactLinks} />
 
-      {selected === "talk" ? (
-        <TalkForm
-          submitting={submitting}
-          error={error}
-          onBack={() => chooseResponse(null)}
-          onSubmit={submitResponse}
+      {submitted ? (
+        <ResponseSuccess
+          responseType={submitted}
+          contactLinks={contactLinks}
         />
-      ) : null}
+      ) : (
+        <>
+          {!selected ? (
+            <div className="response-options">
+              {personalPageContent.responseHub.options.map((option) => (
+                <button
+                  className="response-option"
+                  type="button"
+                  key={option.type}
+                  onClick={() => chooseResponse(option.type)}
+                >
+                  <span>{option.label}</span>
+                  <small>{option.description}</small>
+                </button>
+              ))}
+            </div>
+          ) : null}
 
-      {selected === "need_time" ? (
-        <TimeForm
-          submitting={submitting}
-          error={error}
-          onBack={() => chooseResponse(null)}
-          onSubmit={submitResponse}
-        />
-      ) : null}
+          {selected === "talk" ? (
+            <TalkForm
+              submitting={submitting}
+              storageAvailable={storageAvailable}
+              error={error}
+              contactLinks={contactLinks}
+              onBack={() => chooseResponse(null)}
+              onSubmit={submitResponse}
+            />
+          ) : null}
 
-      {selected === "written_message" ? (
-        <WrittenForm
-          submitting={submitting}
-          error={error}
-          onBack={() => chooseResponse(null)}
-          onSubmit={submitResponse}
-        />
-      ) : null}
+          {selected === "need_time" ? (
+            <TimeForm
+              submitting={submitting}
+              storageAvailable={storageAvailable}
+              error={error}
+              contactLinks={contactLinks}
+              onBack={() => chooseResponse(null)}
+              onSubmit={submitResponse}
+            />
+          ) : null}
 
-      {selected === "no_contact" ? (
-        <NoContactForm
-          submitting={submitting}
-          error={error}
-          onBack={() => chooseResponse(null)}
-          onSubmit={submitResponse}
-        />
+          {selected === "written_message" ? (
+            <WrittenForm
+              submitting={submitting}
+              storageAvailable={storageAvailable}
+              error={error}
+              contactLinks={contactLinks}
+              onBack={() => chooseResponse(null)}
+              onSubmit={submitResponse}
+            />
+          ) : null}
+
+          {selected === "no_contact" ? (
+            <NoContactForm
+              submitting={submitting}
+              storageAvailable={storageAvailable}
+              error={error}
+              contactLinks={contactLinks}
+              onBack={() => chooseResponse(null)}
+              onSubmit={submitResponse}
+            />
+          ) : null}
+        </>
+      )}
+    </div>
+  );
+}
+
+function DirectContactCard({
+  contactLinks,
+}: {
+  contactLinks: ContactLinks;
+}) {
+  return (
+    <section
+      className="direct-contact-card"
+      id="direct-contact-options"
+      data-visit-section="response"
+      aria-labelledby="direct-contact"
+    >
+      <span className="direct-contact-heart" aria-hidden="true">
+        ♡
+      </span>
+      <div>
+        <span className="eyebrow">The simplest route</span>
+        <h3 id="direct-contact">Want to talk to me directly?</h3>
+        <p>
+          Skip every form if you want. These buttons open your own app, and
+          nothing is sent until you choose Send there.
+        </p>
+      </div>
+      <ContactButtons contactLinks={contactLinks} />
+    </section>
+  );
+}
+
+function ResponseSuccess({
+  responseType,
+  contactLinks,
+}: {
+  responseType: ResponseType;
+  contactLinks: ContactLinks;
+}) {
+  const message = personalPageContent.finalMessages[responseType];
+
+  return (
+    <div className="response-success" aria-live="polite">
+      <span className="eyebrow">Response sent</span>
+      <h3>{message.heading}</h3>
+      <p>{message.body}</p>
+      {responseType === "talk" ? (
+        <ContactButtons contactLinks={contactLinks} />
       ) : null}
     </div>
   );
@@ -156,17 +220,29 @@ export function ResponseHub({ token, contactLinks }: ResponseHubProps) {
 
 type FormProps = {
   submitting: boolean;
+  storageAvailable: boolean;
   error: string;
+  contactLinks: ContactLinks;
   onBack: () => void;
   onSubmit: (payload: ResponsePayload) => Promise<void>;
 };
 
-function TalkForm({ submitting, error, onBack, onSubmit }: FormProps) {
+function TalkForm({
+  submitting,
+  storageAvailable,
+  error,
+  contactLinks,
+  onBack,
+  onSubmit,
+}: FormProps) {
   const copy = personalPageContent.forms.talk;
   const [contactMethod, setContactMethod] = useState("page");
   const [preferredTime, setPreferredTime] = useState("i_will_tell_you");
   const [message, setMessage] = useState("");
   const [phoneConfirmed, setPhoneConfirmed] = useState(false);
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const directMessage =
+    message.trim() || "Hey, I saw what you made. We can talk.";
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -176,6 +252,7 @@ function TalkForm({ submitting, error, onBack, onSubmit }: FormProps) {
       preferredTime,
       message,
       phoneConfirmed,
+      phoneNumber,
       website: readHoneypot(event),
     });
   }
@@ -220,31 +297,68 @@ function TalkForm({ submitting, error, onBack, onSubmit }: FormProps) {
       />
 
       {contactMethod === "phone" ? (
-        <label className="check-row">
+        <>
+          <label htmlFor="talk-phone">
+            Phone number (only if you want me to use it)
+          </label>
           <input
-            type="checkbox"
-            checked={phoneConfirmed}
-            onChange={(event) => setPhoneConfirmed(event.target.checked)}
+            id="talk-phone"
+            type="tel"
+            value={phoneNumber}
+            inputMode="tel"
+            autoComplete="tel"
             required
+            maxLength={30}
+            onChange={(event) => setPhoneNumber(event.target.value)}
           />
-          <span>{copy.phoneConfirmation}</span>
-        </label>
+          <label className="check-row">
+            <input
+              type="checkbox"
+              checked={phoneConfirmed}
+              onChange={(event) => setPhoneConfirmed(event.target.checked)}
+              required
+            />
+            <span>{copy.phoneConfirmation}</span>
+          </label>
+        </>
       ) : null}
 
       <FormActions
         submitting={submitting}
+        storageAvailable={storageAvailable}
         error={error}
         onBack={onBack}
+      />
+      <DirectFallback
+        heading="Or start the conversation now"
+        contactLinks={contactLinks}
+        message={directMessage}
       />
     </form>
   );
 }
 
-function TimeForm({ submitting, error, onBack, onSubmit }: FormProps) {
+function TimeForm({
+  submitting,
+  storageAvailable,
+  error,
+  contactLinks,
+  onBack,
+  onSubmit,
+}: FormProps) {
   const copy = personalPageContent.forms.needTime;
   const [waitingPeriod, setWaitingPeriod] = useState("i_do_not_know");
   const [replyPermission, setReplyPermission] = useState("wait_for_me");
   const [message, setMessage] = useState("");
+  const directMessage = [
+    "I saw the page. I need some more time.",
+    message.trim(),
+    replyPermission === "wait_for_me"
+      ? "Please wait for me to contact you."
+      : "You may check in after some time.",
+  ]
+    .filter(Boolean)
+    .join(" ");
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -298,14 +412,27 @@ function TimeForm({ submitting, error, onBack, onSubmit }: FormProps) {
 
       <FormActions
         submitting={submitting}
+        storageAvailable={storageAvailable}
         error={error}
         onBack={onBack}
+      />
+      <DirectFallback
+        heading="Send this boundary directly instead"
+        contactLinks={contactLinks}
+        message={directMessage}
       />
     </form>
   );
 }
 
-function WrittenForm({ submitting, error, onBack, onSubmit }: FormProps) {
+function WrittenForm({
+  submitting,
+  storageAvailable,
+  error,
+  contactLinks,
+  onBack,
+  onSubmit,
+}: FormProps) {
   const copy = personalPageContent.forms.written;
   const [message, setMessage] = useState("");
   const [replyPermission, setReplyPermission] = useState("may_reply");
@@ -369,15 +496,32 @@ function WrittenForm({ submitting, error, onBack, onSubmit }: FormProps) {
 
       <FormActions
         submitting={submitting}
+        storageAvailable={storageAvailable}
         error={error}
         onBack={onBack}
       />
+      {message.trim() ? (
+        <DirectFallback
+          heading="Or send these exact words directly"
+          contactLinks={contactLinks}
+          message={message}
+        />
+      ) : null}
     </form>
   );
 }
 
-function NoContactForm({ submitting, error, onBack, onSubmit }: FormProps) {
+function NoContactForm({
+  submitting,
+  storageAvailable,
+  error,
+  contactLinks,
+  onBack,
+  onSubmit,
+}: FormProps) {
   const copy = personalPageContent.forms.noContact;
+  const directMessage =
+    "I saw the page. I do not want further contact. Please respect this decision.";
 
   return (
     <div className="response-form">
@@ -386,7 +530,7 @@ function NoContactForm({ submitting, error, onBack, onSubmit }: FormProps) {
         <button
           className="primary-button"
           type="button"
-          disabled={submitting}
+          disabled={submitting || !storageAvailable}
           onClick={() =>
             onSubmit({
               responseType: "no_contact",
@@ -394,7 +538,11 @@ function NoContactForm({ submitting, error, onBack, onSubmit }: FormProps) {
             })
           }
         >
-          {submitting ? personalPageContent.forms.sending : copy.confirm}
+          {submitting
+            ? personalPageContent.forms.sending
+            : storageAvailable
+              ? copy.confirm
+              : "Private reply box offline"}
         </button>
         <button
           className="text-button"
@@ -408,8 +556,103 @@ function NoContactForm({ submitting, error, onBack, onSubmit }: FormProps) {
       <p className="form-error" aria-live="polite">
         {error}
       </p>
+      <DirectFallback
+        heading="Send this boundary directly instead"
+        contactLinks={contactLinks}
+        message={directMessage}
+      />
     </div>
   );
+}
+
+function DirectFallback({
+  heading,
+  contactLinks,
+  message,
+}: {
+  heading: string;
+  contactLinks: ContactLinks;
+  message: string;
+}) {
+  return (
+    <div className="direct-fallback">
+      <strong>{heading}</strong>
+      <small>
+        This opens a draft in your app. You can review or change it before
+        sending.
+      </small>
+      <ContactButtons contactLinks={contactLinks} message={message} />
+    </div>
+  );
+}
+
+function ContactButtons({
+  contactLinks,
+  message,
+}: {
+  contactLinks: ContactLinks;
+  message?: string;
+}) {
+  const entries = Object.entries(contactLinks) as Array<
+    [ContactMethod, string | undefined]
+  >;
+  const availableEntries = entries.filter(
+    (entry): entry is [ContactMethod, string] => Boolean(entry[1]),
+  );
+
+  if (availableEntries.length === 0) {
+    return (
+      <p className="contact-unavailable">
+        Direct contact details have not been added yet.
+      </p>
+    );
+  }
+
+  return (
+    <div className="contact-links" aria-label="Direct contact choices">
+      {availableEntries.map(([method, href]) => (
+        <a
+          className={`contact-link contact-link-${method}`}
+          href={buildContactHref(method, href, message)}
+          key={method}
+          target="_blank"
+          rel="noreferrer"
+        >
+          <span aria-hidden="true">
+            {method === "whatsapp" ? "↗" : method === "email" ? "✉" : "♡"}
+          </span>
+          {contactLabels[method]}
+        </a>
+      ))}
+    </div>
+  );
+}
+
+function buildContactHref(
+  method: ContactMethod,
+  href: string,
+  message?: string,
+) {
+  if (!message?.trim() || method === "instagram") {
+    return href;
+  }
+
+  try {
+    const url = new URL(href);
+
+    if (method === "whatsapp") {
+      url.searchParams.set("text", message.trim());
+    }
+
+    if (method === "email") {
+      url.searchParams.set("su", "A message after seeing the site");
+      url.searchParams.set("body", message.trim());
+    }
+
+    return url.toString();
+  } catch {
+    return href;
+  }
 }
 
 function readHoneypot(event: FormEvent<HTMLFormElement>) {
@@ -433,6 +676,7 @@ function HoneypotField() {
     </div>
   );
 }
+
 function FormHeading({ heading, body }: { heading: string; body: string }) {
   return (
     <div className="form-heading">
@@ -444,20 +688,28 @@ function FormHeading({ heading, body }: { heading: string; body: string }) {
 
 function FormActions({
   submitting,
+  storageAvailable,
   error,
   onBack,
 }: {
   submitting: boolean;
+  storageAvailable: boolean;
   error: string;
   onBack: () => void;
 }) {
   return (
     <>
       <div className="form-actions">
-        <button className="primary-button" type="submit" disabled={submitting}>
+        <button
+          className="primary-button"
+          type="submit"
+          disabled={submitting || !storageAvailable}
+        >
           {submitting
             ? personalPageContent.forms.sending
-            : personalPageContent.forms.submit}
+            : storageAvailable
+              ? personalPageContent.forms.submit
+              : "Private reply box offline"}
         </button>
         <button
           className="text-button"

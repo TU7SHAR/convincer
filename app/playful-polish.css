@@ -1,0 +1,91 @@
+.free-time-section {
+  display: grid;
+  place-items: center;
+  padding: 5rem 0 9rem;
+}
+
+.free-time-card {
+  position: relative;
+  width: min(100%, 900px);
+  overflow: hidden;
+  border: 1px solid rgba(233, 189, 159, 0.23);
+  border-radius: 2rem;
+  padding: clamp(1.5rem, 6vw, 4.5rem);
+  background:
+    radial-gradient(circle at 100% 0%, rgba(207, 156, 122, 0.16), transparent 26rem),
+    rgba(255, 255, 255, 0.025);
+}
+
+.free-time-card::after {
+  position: absolute;
+  right: -1.5rem;
+  bottom: -4.5rem;
+  color: rgba(243, 233, 220, 0.035);
+  content: "busy";
+  font-family: var(--display);
+  font-size: clamp(8rem, 24vw, 16rem);
+  letter-spacing: -0.08em;
+  pointer-events: none;
+}
+
+.free-time-card > * {
+  position: relative;
+  z-index: 1;
+}
+
+.free-time-card h2 {
+  max-width: 720px;
+  margin-bottom: 2.5rem;
+}
+
+.free-time-paragraphs {
+  display: grid;
+  gap: 1.2rem;
+  max-width: 700px;
+}
+
+.free-time-paragraphs p {
+  margin: 0;
+  color: var(--ink-soft);
+  font-size: clamp(1rem, 2.4vw, 1.12rem);
+  line-height: 1.8;
+}
+
+.free-time-card blockquote {
+  max-width: 690px;
+  margin: 3rem 0 0;
+  border-left: 1px solid var(--warm);
+  padding-left: 1.25rem;
+  color: var(--ink);
+  font-family: var(--display);
+  font-size: clamp(1.45rem, 4vw, 2.2rem);
+  line-height: 1.35;
+}
+
+.quiet-exit-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.8rem;
+  margin-top: 2rem;
+}
+
+.quiet-exit-actions .primary-button,
+.quiet-exit-actions .secondary-button {
+  width: min(100%, 260px);
+  cursor: pointer;
+}
+
+.quiet-exit-reassurance {
+  display: block;
+  margin-top: 1.4rem;
+  color: var(--ink-muted);
+  font-size: 0.72rem;
+}
+
+@media (min-width: 640px) {
+  .quiet-exit-actions {
+    flex-direction: row;
+  }
+}

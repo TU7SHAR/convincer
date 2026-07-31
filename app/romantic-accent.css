@@ -1,0 +1,243 @@
+:root {
+  --warm: #df88a8;
+  --warm-bright: #ffc0d5;
+  --rose: #e99ab6;
+  --rose-soft: #f5bfd1;
+  --rose-deep: #8f3f62;
+}
+
+body {
+  background:
+    radial-gradient(circle at 14% -8%, rgba(190, 74, 119, 0.2), transparent 36rem),
+    radial-gradient(circle at 96% 36%, rgba(116, 46, 76, 0.12), transparent 28rem),
+    var(--night);
+}
+
+.ambient-orb-one {
+  background: radial-gradient(circle, rgba(220, 105, 149, 0.34), transparent 67%);
+}
+
+.ambient-orb-two {
+  background: radial-gradient(circle, rgba(133, 58, 91, 0.28), transparent 68%);
+}
+
+.primary-button {
+  background: linear-gradient(135deg, #ffe6ee, #f2a9c2);
+  box-shadow: 0 0.9rem 2.8rem rgba(188, 77, 119, 0.15);
+}
+
+.primary-button:hover {
+  background: linear-gradient(135deg, #fff4f7, #ffc5d8);
+}
+
+.memory-frame {
+  box-shadow:
+    0 2.5rem 7rem rgba(0, 0, 0, 0.32),
+    0 0 0 1px rgba(233, 154, 182, 0.08);
+}
+
+.smile-scene {
+  position: relative;
+  display: grid;
+  min-height: 78svh;
+  place-items: center;
+  overflow: hidden;
+  margin: 2rem calc(50% - 50vw) 8rem;
+  padding: 7rem max(1.25rem, calc((100vw - 1130px) / 2));
+  background:
+    radial-gradient(circle at 50% 46%, rgba(226, 126, 162, 0.22), transparent 24rem),
+    linear-gradient(180deg, transparent, rgba(96, 37, 61, 0.17), transparent);
+  text-align: center;
+}
+
+.smile-scene::before {
+  position: absolute;
+  inset: 1.5rem;
+  border: 1px solid rgba(244, 181, 205, 0.13);
+  border-radius: 2.5rem;
+  content: "";
+  pointer-events: none;
+}
+
+.smile-scene-content {
+  position: relative;
+  z-index: 2;
+  width: min(100%, 820px);
+}
+
+.smile-scene h2 {
+  margin-top: 1.2rem;
+  color: #fff0f5;
+  text-wrap: balance;
+}
+
+.smile-scene p {
+  max-width: 650px;
+  margin: 0 auto;
+  color: #ddc2cc;
+  font-size: clamp(1rem, 2.6vw, 1.18rem);
+  line-height: 1.8;
+}
+
+.smile-scene small {
+  display: block;
+  margin-top: 1rem;
+  color: #ae8997;
+  line-height: 1.6;
+}
+
+.smile-button {
+  display: inline-flex;
+  min-height: 3.4rem;
+  align-items: center;
+  justify-content: center;
+  gap: 0.7rem;
+  margin-top: 2rem;
+  border: 1px solid rgba(255, 214, 229, 0.28);
+  border-radius: 999px;
+  padding: 0.85rem 1.25rem;
+  background: rgba(104, 43, 68, 0.38);
+  color: #ffeaf1;
+  cursor: pointer;
+  font-size: 0.82rem;
+  font-weight: 650;
+  backdrop-filter: blur(14px);
+  transition:
+    transform 180ms ease,
+    border-color 180ms ease,
+    background-color 180ms ease;
+}
+
+.smile-button:hover {
+  transform: translateY(-2px);
+  border-color: rgba(255, 214, 229, 0.55);
+  background: rgba(135, 53, 85, 0.48);
+}
+
+.smile-button > span {
+  color: #ffb3cf;
+  font-size: 1.15rem;
+}
+
+.heart-sticker-field {
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.heart-sticker {
+  position: absolute;
+  bottom: 10%;
+  left: 50%;
+  display: grid;
+  width: 3.2rem;
+  height: 3.2rem;
+  place-items: center;
+  border: 1px solid rgba(255, 237, 244, 0.68);
+  border-radius: 1rem;
+  background: linear-gradient(145deg, #ffdbe8, #d96f99);
+  box-shadow:
+    0 1rem 2rem rgba(59, 15, 33, 0.28),
+    inset 0 1px rgba(255, 255, 255, 0.72);
+  color: #6f2947;
+  font-family: var(--display);
+  font-size: 1.7rem;
+  opacity: 0;
+  animation: heart-flutter 2.35s cubic-bezier(0.18, 0.72, 0.27, 1) forwards;
+}
+
+.heart-sticker:nth-child(1) {
+  left: 9%;
+  animation-delay: 0ms;
+  --heart-drift: 3rem;
+  --heart-turn: -18deg;
+}
+
+.heart-sticker:nth-child(2) {
+  left: 22%;
+  width: 2.5rem;
+  height: 2.5rem;
+  animation-delay: 170ms;
+  --heart-drift: -2rem;
+  --heart-turn: 14deg;
+}
+
+.heart-sticker:nth-child(3) {
+  left: 36%;
+  animation-delay: 70ms;
+  --heart-drift: 1rem;
+  --heart-turn: -8deg;
+}
+
+.heart-sticker:nth-child(4) {
+  left: 48%;
+  width: 2.4rem;
+  height: 2.4rem;
+  animation-delay: 280ms;
+  --heart-drift: -1rem;
+  --heart-turn: 22deg;
+}
+
+.heart-sticker:nth-child(5) {
+  left: 59%;
+  animation-delay: 120ms;
+  --heart-drift: 2.5rem;
+  --heart-turn: 12deg;
+}
+
+.heart-sticker:nth-child(6) {
+  left: 72%;
+  width: 2.7rem;
+  height: 2.7rem;
+  animation-delay: 230ms;
+  --heart-drift: -3rem;
+  --heart-turn: -16deg;
+}
+
+.heart-sticker:nth-child(7) {
+  left: 84%;
+  animation-delay: 40ms;
+  --heart-drift: 1.5rem;
+  --heart-turn: 18deg;
+}
+
+.heart-sticker:nth-child(8) {
+  left: 94%;
+  width: 2.35rem;
+  height: 2.35rem;
+  animation-delay: 330ms;
+  --heart-drift: -4rem;
+  --heart-turn: -12deg;
+}
+
+@keyframes heart-flutter {
+  0% {
+    opacity: 0;
+    transform: translate3d(-50%, 2rem, 0) rotate(0) scale(0.45);
+  }
+
+  16% {
+    opacity: 1;
+    transform: translate3d(-50%, 0, 0) rotate(-5deg) scale(1);
+  }
+
+  62% {
+    opacity: 0.95;
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate3d(calc(-50% + var(--heart-drift)), -23rem, 0)
+      rotate(var(--heart-turn)) scale(0.82);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .heart-sticker {
+    animation: none;
+    opacity: 0.2;
+    transform: translateX(-50%);
+  }
+}

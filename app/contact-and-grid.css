@@ -1,0 +1,210 @@
+.personal-experience {
+  position: relative;
+  isolation: isolate;
+  background-attachment: fixed;
+}
+
+.personal-experience > :not(.grid-heart-field) {
+  position: relative;
+  z-index: 1;
+}
+
+.grid-heart-field {
+  position: fixed;
+  z-index: 0;
+  inset: 0;
+  display: grid;
+  overflow: hidden;
+  grid-template-columns: repeat(40, 48px);
+  grid-template-rows: repeat(24, 48px);
+  pointer-events: none;
+}
+
+.grid-heart {
+  position: relative;
+  grid-column: var(--heart-column);
+  grid-row: var(--heart-row);
+  place-self: start;
+  color: #ff9fc1;
+  font-family: var(--display);
+  font-size: var(--heart-size);
+  filter: drop-shadow(0 0 0.55rem rgba(255, 117, 171, 0.72));
+  opacity: 0;
+  transform: translate(-50%, -50%) scale(0.15);
+  animation: grid-heart-pop 13s ease-in-out var(--heart-delay) infinite;
+}
+
+.grid-heart::after {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0.26rem;
+  height: 0.26rem;
+  border-radius: 999px;
+  background: #ffd9e7;
+  box-shadow: 0 0 0.75rem rgba(255, 140, 183, 0.9);
+  content: "";
+  opacity: 0;
+  transform: translate(-50%, -50%);
+}
+
+@keyframes grid-heart-pop {
+  0%,
+  76% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.15);
+  }
+
+  80% {
+    opacity: 0.45;
+    transform: translate(-50%, -50%) scale(0.35);
+  }
+
+  84% {
+    opacity: 0.95;
+    transform: translate(-50%, -68%) scale(1.18) rotate(-8deg);
+  }
+
+  89% {
+    opacity: 0.78;
+    transform: translate(-50%, -145%) scale(0.94) rotate(7deg);
+  }
+
+  96%,
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -270%) scale(0.62) rotate(-5deg);
+  }
+}
+
+.direct-contact-card {
+  position: relative;
+  display: grid;
+  gap: 1.5rem;
+  overflow: hidden;
+  margin-bottom: 2rem;
+  border: 1px solid rgba(255, 185, 211, 0.3);
+  border-radius: 1.75rem;
+  padding: clamp(1.4rem, 4vw, 2.4rem);
+  background:
+    radial-gradient(circle at 100% 0%, rgba(235, 116, 161, 0.2), transparent 22rem),
+    linear-gradient(145deg, rgba(112, 42, 70, 0.27), rgba(255, 255, 255, 0.025));
+  box-shadow:
+    0 1.8rem 5rem rgba(26, 4, 13, 0.24),
+    inset 0 1px rgba(255, 255, 255, 0.035);
+}
+
+.direct-contact-card > * {
+  position: relative;
+  z-index: 1;
+}
+
+.direct-contact-card h3 {
+  max-width: 570px;
+  margin: 0.8rem 0 0.65rem;
+  font-family: var(--display);
+  font-size: clamp(2rem, 6vw, 3.7rem);
+  font-weight: 400;
+  letter-spacing: -0.04em;
+  line-height: 1;
+}
+
+.direct-contact-card p {
+  max-width: 590px;
+  margin: 0;
+  color: var(--ink-soft);
+  line-height: 1.7;
+}
+
+.direct-contact-heart {
+  position: absolute;
+  z-index: 0;
+  right: -1.5rem;
+  bottom: -5.7rem;
+  color: rgba(255, 192, 215, 0.065);
+  font-family: var(--display);
+  font-size: 15rem;
+  line-height: 1;
+  transform: rotate(-12deg);
+}
+
+.contact-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.7rem;
+  margin-top: 0.1rem;
+}
+
+.contact-links .contact-link {
+  display: inline-flex;
+  min-height: 3.1rem;
+  align-items: center;
+  gap: 0.55rem;
+  border: 1px solid rgba(255, 205, 224, 0.25);
+  border-radius: 999px;
+  padding: 0.78rem 1.05rem;
+  background: rgba(31, 12, 20, 0.48);
+  color: #fff0f5;
+  font-size: 0.8rem;
+  font-weight: 650;
+  text-decoration: none;
+  transition:
+    transform 180ms ease,
+    border-color 180ms ease,
+    background-color 180ms ease;
+}
+
+.contact-links .contact-link:hover {
+  transform: translateY(-2px);
+  border-color: rgba(255, 205, 224, 0.54);
+  background: rgba(117, 39, 70, 0.5);
+}
+
+.contact-links .contact-link-whatsapp {
+  border-color: rgba(139, 225, 174, 0.3);
+}
+
+.contact-links .contact-link-email {
+  border-color: rgba(255, 195, 218, 0.34);
+}
+
+.contact-unavailable {
+  color: var(--ink-muted);
+  font-size: 0.8rem;
+}
+
+.direct-fallback {
+  margin-top: 1.5rem;
+  border-top: 1px solid var(--line);
+  padding-top: 1.35rem;
+}
+
+.direct-fallback > strong,
+.direct-fallback > small {
+  display: block;
+}
+
+.direct-fallback > strong {
+  color: var(--ink-soft);
+  font-family: var(--display);
+  font-size: 1.2rem;
+  font-weight: 400;
+}
+
+.direct-fallback > small {
+  margin-top: 0.35rem;
+  color: var(--ink-muted);
+  font-size: 0.72rem;
+  line-height: 1.55;
+}
+
+.direct-fallback .contact-links {
+  margin-top: 0.9rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .grid-heart {
+    display: none;
+    animation: none;
+  }
+}

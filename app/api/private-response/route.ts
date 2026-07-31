@@ -102,12 +102,17 @@ export async function POST(request: Request) {
     }
 
     return safeError(400);
-  } catch {
+  } catch (error) {
+    console.error("[api/private-response] database write failed", {
+      responseType: parsed.data.responseType,
+      error: error instanceof Error ? error.message : String(error),
+    });
+
     return NextResponse.json(
       {
         ok: false,
         message:
-          "This could not be sent right now. Please keep the page open and try again.",
+          "The private reply box is temporarily unavailable. Your words are still on this page—please use a direct contact option or try again later.",
       },
       { status: 500 },
     );

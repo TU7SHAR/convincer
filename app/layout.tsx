@@ -2,6 +2,10 @@ import type { Metadata } from "next";
 import "./globals.css";
 import "./local-font.css";
 import "./personal.css";
+import "./playful-polish.css";
+import "./romantic-accent.css";
+import "./contact-and-grid.css";
+import "./visit-consent.css";
 
 export const metadata: Metadata = {
   title: "Something I wanted to say",

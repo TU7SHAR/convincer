@@ -42,6 +42,15 @@ export const personalPageContent = {
     body: "Not an archive. Just a few ordinary expressions that somehow made ordinary days feel less ordinary.",
   },
 
+  smileScene: {
+    eyebrow: "A completely unbiased observation",
+    heading: "My chatar-patar is smiling right now.",
+    body: "I am almost certain of it. You look so amazingly pretty when you smile—the kind of pretty that makes the whole moment feel lighter.",
+    note: "And yes, I am shamelessly hoping this page earned at least one.",
+    buttonLabel: "Tap if I caught you smiling",
+    clickedLabel: "Knew it. Keep that smile, princess.",
+  },
+
   memories: [
     {
       id: "expression-01",
@@ -140,50 +149,60 @@ export const personalPageContent = {
     body: "I kept thinking enough time would make me stop wanting to tell you things. Something funny would happen, I would see something you would have reacted to, or a normal day would suddenly remind me of one of your expressions. I understood that what I missed was not only the conversations. I missed your presence inside the ordinary parts of my day.",
   },
 
+  freeTime: {
+    eyebrow: "When the day goes quiet",
+    heading: "Staying busy works. Until it doesn’t.",
+    paragraphs: [
+      "I can control myself by staying super busy. Then free time arrives and—oh my God—the whole act falls apart. One thought of you and I become stupidly sentimental again.",
+      "I miss your chatar-patar. Your chehak-pehak. The small, noisy life you brought into ordinary moments. I keep wondering when things went wrong, because I have honestly never been this shameless about missing someone.",
+    ],
+    aside:
+      "The unserious version of me still wants to say: just come back, pretty pwease, Palak. The serious version knows your answer has to be yours.",
+  },
+
   accountability: {
-    eyebrow: "The honest part",
-    heading: "I know this does not fix everything.",
-    body: "Building a website cannot undo whatever made distance feel necessary. Missing you also does not mean you have to come back. I may have misunderstood things, reacted emotionally, or made the situation heavier than it needed to be. I am not asking you to pretend none of that happened.",
+    eyebrow: "The truth I owe you",
+    heading: "I was the one who created the distance.",
+    body: "I removed you because I was hurt. I cared for you as more than a friend, and I wanted to feel loved and chosen too. I was not trying to punish you; I just did not know how to stay close while carrying feelings that did not seem to have a place. But instead of saying that plainly, I stepped away and quietly hoped that you asking me back would tell me I mattered. That expectation was unfair to you.",
     request:
-      "What I am asking for is smaller: one honest conversation, without pressure to promise anything.",
+      "This is not an apology for having feelings or for needing space. It is an apology for leaving you to understand a decision I never explained honestly.",
     points: [
       {
-        title: "I should have listened.",
-        body: "I should have listened instead of trying to immediately change your mind.",
+        title: "I should have spoken honestly.",
+        body: "I should have told you that staying close while wanting more was hurting me, instead of disappearing and hoping your reaction would answer what I could not ask.",
         enabled: true,
       },
       {
-        title: "Fear made things heavier.",
-        body: "I let my fear of losing the connection make some conversations heavier than they needed to be.",
+        title: "You did not owe me a rescue.",
+        body: "You were never responsible for guessing what I needed, asking me to return, or repairing a distance I chose without explaining it.",
         enabled: true,
       },
       {
-        title: "Care is not control.",
-        body: "I understand that caring about someone does not give me control over their decision.",
+        title: "Your silence was not proof.",
+        body: "Not asking me to return does not prove that I meant nothing. You may have been hurt, confused, or simply respecting the distance I created. I should not turn your silence into a verdict about what I meant to you.",
         enabled: true,
       },
     ],
   },
 
   invitation: {
-    eyebrow: "What I am hoping for",
-    heading: "One calm, honest conversation.",
-    body: "Not an instant answer. Not a promise that everything will return to how it was. I would just like the chance to speak once, calmly and honestly, and understand where we both stand.",
+    eyebrow: "What is still true",
+    heading: "I still have feelings for you.",
+    body: "I would be lying if I called all of this only friendship. There is tenderness here, hope, and a part of me that still wonders whether we could find our way to something more. But I do not want to manufacture that feeling inside you, turn your kindness into a promise, or ask you to carry my emotions for me.",
     points: [
-      "One honest conversation.",
-      "No fighting or forcing a decision.",
-      "Space for both people to say what they actually feel.",
+      "If you feel something too, I would be grateful for one honest conversation.",
+      "If friendship is what you genuinely want, I can be your friend without treating it as a waiting room for romance.",
+      "If what you need is distance, I will respect that without asking you to soften the answer for me.",
     ],
     final:
-      "Palak, I do not expect a website to decide anything for you. I made it because what we had mattered to me, and silence did not feel like an honest ending. I would still choose one real conversation over a hundred assumptions. If there is even a small part of you that is open to that, you can tell me below.",
+      "I miss you, Palak—not only the messages, but you: your chatar-patar, your chehak-pehak, your expressions, and the way your presence made ordinary moments feel alive. I am asking for truth, not pity. If there is any real warmth left between us, I would be grateful for one conversation. If there is not, I will still respect your answer and be grateful that you were once such a meaningful part of my life.",
   },
-
   responseHub: {
     eyebrow: "No perfect answer required",
     heading: "You do not need to find the perfect words.",
     body: "Choose whichever answer feels closest to what you actually feel.",
     privacyNote:
-      "Only the answer you intentionally send below will be stored. Viewing, scrolling, and leaving are not recorded.",
+      "Only the answer you intentionally send below is stored as a response. If you allowed the optional visit timeline above, its consent timestamp and the named sections you reached are stored separately. No message, phone number, IP address, device fingerprint, or typing is collected from viewing.",
     options: [
       {
         type: "talk",
@@ -271,9 +290,12 @@ export const personalPageContent = {
       body: "This page is now closed. I understand, and I will respect your decision. Take care, Palak.",
     },
     quietExit: {
-      heading: "That is completely okay.",
-      body: "You can close this page. Nothing was recorded or sent.",
-      linkLabel: "Go to a neutral page",
+      eyebrow: "A tiny protest, not a trap",
+      heading: "Hey, I am supposed to be the quiet one. Not you.",
+      body: "My first, completely unserious reaction is to reject this application and say, “you better watch properly, my princess.” My real answer is that this is not an application I get to reject. You can leave now with no guilt, or stay for one more minute.",
+      reassurance: "Leaving sends no response and contacts nobody.",
+      leaveLabel: "Leave now",
+      stayLabel: "Okay, one more minute",
     },
   },
 } as const;

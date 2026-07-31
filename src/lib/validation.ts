@@ -29,6 +29,7 @@ export const privateResponseSchema = z
     waitingPeriod: optionalShortText,
     replyPermission: optionalShortText,
     phoneConfirmed: z.boolean().optional(),
+    phoneNumber: z.string().trim().max(30).optional().transform((value) => value || undefined),
     website: z.string().max(200).optional(),
   })
   .superRefine((value, context) => {
@@ -40,6 +41,17 @@ export const privateResponseSchema = z
       });
     }
 
+    if (
+      value.responseType === "talk" &&
+      value.contactMethod === "phone" &&
+      !value.phoneNumber
+    ) {
+      context.addIssue({
+        code: "custom",
+        path: ["phoneNumber"],
+        message: "Please enter the number you want used for the call.",
+      });
+    }
     if (
       value.responseType === "talk" &&
       value.contactMethod === "phone" &&

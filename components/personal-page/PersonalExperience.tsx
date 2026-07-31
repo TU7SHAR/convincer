@@ -3,12 +3,15 @@
 import Link from "next/link";
 import { useState } from "react";
 
+import { ConsentVisitTracker } from "@/components/personal-page/ConsentVisitTracker";
+import { GridHeartField } from "@/components/personal-page/GridHeartField";
 import { MemoryMedia } from "@/components/personal-page/MemoryMedia";
 import {
   ResponseHub,
   type ContactLinks,
 } from "@/components/personal-page/ResponseHub";
 import { SeparationTimer } from "@/components/personal-page/SeparationTimer";
+import { SmileScene } from "@/components/personal-page/SmileScene";
 import {
   enabledMemories,
   personalPageContent,
@@ -43,7 +46,7 @@ export function PersonalExperience({
     setStarted(true);
     window.requestAnimationFrame(() => {
       document
-        .getElementById("response")
+        .getElementById("direct-contact-options")
         ?.scrollIntoView({ behavior: "smooth", block: "start" });
     });
   }
@@ -54,12 +57,22 @@ export function PersonalExperience({
     return (
       <main className="quiet-exit">
         <div className="quiet-exit-card">
-          <span className="eyebrow">You are free to leave</span>
+          <span className="eyebrow">{copy.eyebrow}</span>
           <h1>{copy.heading}</h1>
           <p>{copy.body}</p>
-          <Link className="secondary-button" href="/">
-            {copy.linkLabel}
-          </Link>
+          <div className="quiet-exit-actions">
+            <Link className="primary-button" href="/">
+              {copy.leaveLabel}
+            </Link>
+            <button
+              className="secondary-button"
+              type="button"
+              onClick={() => setQuietExit(false)}
+            >
+              {copy.stayLabel}
+            </button>
+          </div>
+          <small className="quiet-exit-reassurance">{copy.reassurance}</small>
         </div>
       </main>
     );
@@ -67,7 +80,12 @@ export function PersonalExperience({
 
   return (
     <main className="personal-experience">
-      <section className={`opening-scene ${started ? "opening-complete" : ""}`}>
+      <GridHeartField />
+      <ConsentVisitTracker token={token} />
+      <section
+        className={`opening-scene ${started ? "opening-complete" : ""}`}
+        data-visit-section="opening"
+      >
         <div className="ambient-orb ambient-orb-one" aria-hidden="true" />
         <div className="ambient-orb ambient-orb-two" aria-hidden="true" />
         <div className="opening-content">
@@ -112,7 +130,11 @@ export function PersonalExperience({
           </div>
 
           <div className="story">
-            <section className="story-intro" id="memories">
+            <section
+              className="story-intro"
+              id="memories"
+              data-visit-section="memories"
+            >
               <span className="eyebrow">
                 {personalPageContent.memoriesIntro.eyebrow}
               </span>
@@ -142,12 +164,14 @@ export function PersonalExperience({
               ))}
             </section>
 
+            <SmileScene />
+
             <section className="absence-transition">
               <p>{personalPageContent.absenceTransition.first}</p>
               <strong>{personalPageContent.absenceTransition.second}</strong>
             </section>
 
-            <section className="timer-section">
+            <section className="timer-section" data-visit-section="timer">
               <div className="section-heading centered-heading">
                 <span className="eyebrow">July 5, 2026</span>
                 <h2>{personalPageContent.separation.heading}</h2>
@@ -159,7 +183,7 @@ export function PersonalExperience({
               </div>
             </section>
 
-            <section className="reflection-section">
+            <section className="reflection-section" data-visit-section="reflection">
               <div className="reflection-photo">
                 <MemoryMedia
                   memory={
@@ -178,7 +202,22 @@ export function PersonalExperience({
               </div>
             </section>
 
-            <section className="accountability-section">
+            <section className="free-time-section" data-visit-section="free_time">
+              <div className="free-time-card">
+                <span className="eyebrow">
+                  {personalPageContent.freeTime.eyebrow}
+                </span>
+                <h2>{personalPageContent.freeTime.heading}</h2>
+                <div className="free-time-paragraphs">
+                  {personalPageContent.freeTime.paragraphs.map((paragraph) => (
+                    <p key={paragraph}>{paragraph}</p>
+                  ))}
+                </div>
+                <blockquote>{personalPageContent.freeTime.aside}</blockquote>
+              </div>
+            </section>
+
+            <section className="accountability-section" data-visit-section="accountability">
               <div className="section-copy wide-copy">
                 <span className="eyebrow">
                   {personalPageContent.accountability.eyebrow}
@@ -202,7 +241,7 @@ export function PersonalExperience({
               </div>
             </section>
 
-            <section className="invitation-section">
+            <section className="invitation-section" data-visit-section="invitation">
               <span className="eyebrow">
                 {personalPageContent.invitation.eyebrow}
               </span>
@@ -215,7 +254,11 @@ export function PersonalExperience({
               </ul>
             </section>
 
-            <section className="response-section" id="response">
+            <section
+              className="response-section"
+              id="response"
+              data-visit-section="response"
+            >
               <div className="response-intro">
                 <span className="eyebrow">
                   {personalPageContent.responseHub.eyebrow}
@@ -233,11 +276,15 @@ export function PersonalExperience({
                   cannot be stored until the database is configured.
                 </p>
               ) : null}
-              <ResponseHub token={token} contactLinks={contactLinks} />
+              <ResponseHub
+                token={token}
+                contactLinks={contactLinks}
+                storageAvailable={storageAvailable}
+              />
             </section>
 
-            <div className="story-signoff" aria-label="From Tushar">
-              <span>— Tushar</span>
+            <div className="story-signoff" aria-label="From your Tushar">
+              <span>— your tushar</span>
             </div>
           </div>
         </>
