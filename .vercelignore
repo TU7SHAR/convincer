@@ -1,0 +1,6 @@
+# Original personal media is source material only. Never deploy it.
+public/palak/
+
+# Local review artifacts.
+media-review.*
+.codex-*
