@@ -30,18 +30,22 @@ export function MemoryMedia({ memory, priority = false }: MemoryMediaProps) {
       return;
     }
 
+    // Try playing immediately on mount — handles cases where autoPlay
+    // attribute is ignored by the browser on conditional renders.
+    void video.play().catch(() => undefined);
+
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
-          // play() may already be running via autoplay — only call if paused
-          if (video.paused) {
-            void video.play().catch(() => undefined);
-          }
+          if (video.paused) void video.play().catch(() => undefined);
         } else {
           video.pause();
         }
       },
-      { threshold: 0.25 },
+      // threshold: 0 fires as soon as a single pixel is visible.
+      // Necessary for tall portrait videos on small mobile screens
+      // where the full 25% threshold is never reached.
+      { threshold: 0 },
     );
 
     observer.observe(video);
