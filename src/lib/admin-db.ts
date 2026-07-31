@@ -99,6 +99,9 @@ export async function storeConsentedVisitEvent(
       event_type,
       route_label,
       section_key,
+      duration_ms,
+      scroll_pct,
+      extra,
       metadata
     )
     select
@@ -106,6 +109,9 @@ export async function storeConsentedVisitEvent(
       ${input.eventType},
       ${input.route},
       ${input.sectionKey ?? null},
+      ${input.durationMs ?? null},
+      ${input.scrollPct ?? null},
+      ${input.extra ? JSON.stringify(input.extra) : null}::jsonb,
       ${metadata}::jsonb
     from saved_session
     on conflict do nothing

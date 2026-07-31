@@ -1,4 +1,4 @@
-import { z } from "zod";
+﻿import { z } from "zod";
 
 export const visitSections = [
   "opening",
@@ -10,6 +10,7 @@ export const visitSections = [
   "accountability",
   "invitation",
   "response",
+  "honesty",
 ] as const;
 
 export const visitEventSchema = z
@@ -18,26 +19,19 @@ export const visitEventSchema = z
     sessionId: z.uuid(),
     consent: z.literal(true),
     consentVersion: z.literal("1"),
-    eventType: z.enum(["session_started", "section_view"]),
+    eventType: z.enum([
+      "session_started",
+      "section_view",
+      "section_exit",
+      "page_exit",
+      "button_click",
+      "consent_choice",
+    ]),
     route: z.literal("/p/[private]"),
     sectionKey: z.enum(visitSections).optional(),
-  })
-  .superRefine((value, context) => {
-    if (value.eventType === "section_view" && !value.sectionKey) {
-      context.addIssue({
-        code: "custom",
-        path: ["sectionKey"],
-        message: "A section key is required for section views.",
-      });
-    }
-
-    if (value.eventType === "session_started" && value.sectionKey) {
-      context.addIssue({
-        code: "custom",
-        path: ["sectionKey"],
-        message: "Session start events cannot include a section.",
-      });
-    }
+    durationMs: z.number().int().nonnegative().optional(),
+    scrollPct: z.number().int().min(0).max(100).optional(),
+    extra: z.record(z.string(), z.unknown()).optional(),
   });
 
 export type VisitEventInput = z.infer<typeof visitEventSchema>;

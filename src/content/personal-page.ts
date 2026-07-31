@@ -188,6 +188,7 @@ export const personalPageContent = {
   invitation: {
     eyebrow: "What is still true",
     heading: "I still have feelings for you.",
+    personalNote: "I am introverted by nature. I do not let many people into the unfiltered parts of my life, and you became one of the few I trusted there. That is part of why losing this connection has felt so heavy. I do not say that to make you responsible for staying; I say it because I want you to understand why this mattered so much to me.",
     body: "I would be lying if I called all of this only friendship. There is tenderness here, hope, and a part of me that still wonders whether we could find our way to something more. But I do not want to manufacture that feeling inside you, turn your kindness into a promise, or ask you to carry my emotions for me.",
     points: [
       "If you feel something too, I would be grateful for one honest conversation.",

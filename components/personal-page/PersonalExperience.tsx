@@ -246,6 +246,7 @@ export function PersonalExperience({
                 {personalPageContent.invitation.eyebrow}
               </span>
               <h2>{personalPageContent.invitation.heading}</h2>
+              <p>{personalPageContent.invitation.personalNote}</p>
               <p>{personalPageContent.invitation.body}</p>
               <ul>
                 {personalPageContent.invitation.points.map((point) => (
