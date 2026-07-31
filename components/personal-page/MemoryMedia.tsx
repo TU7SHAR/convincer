@@ -25,15 +25,23 @@ export function MemoryMedia({ memory, priority = false }: MemoryMediaProps) {
       "(prefers-reduced-motion: reduce)",
     ).matches;
 
+    if (prefersReducedMotion) {
+      video.pause();
+      return;
+    }
+
     const observer = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting && !prefersReducedMotion) {
-          void video.play().catch(() => undefined);
+        if (entry.isIntersecting) {
+          // play() may already be running via autoplay — only call if paused
+          if (video.paused) {
+            void video.play().catch(() => undefined);
+          }
         } else {
           video.pause();
         }
       },
-      { threshold: 0.55 },
+      { threshold: 0.25 },
     );
 
     observer.observe(video);
@@ -68,9 +76,10 @@ export function MemoryMedia({ memory, priority = false }: MemoryMediaProps) {
       ref={videoRef}
       className="memory-video"
       muted
+      autoPlay
       playsInline
       loop
-      preload="metadata"
+      preload="auto"
       poster={memory.poster}
       aria-label={memory.alt}
       onError={() => setFailed(true)}
